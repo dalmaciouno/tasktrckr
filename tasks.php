@@ -16,7 +16,12 @@ case 'list':
 echo json_encode($tasks);
 break;
 case 'add':
-main
+case 'search':
+$q = strtolower($_GET['q'] ?? '');
+$results = array_values(array_filter($tasks, function ($t) use ($q) {
+return strpos(strtolower($t['title']), $q) !== false;
+}));
+echo json_encode($results);
 case 'done':
 $input = json_decode(file_get_contents('php://input'), true);
 foreach ($tasks as &$t) {
