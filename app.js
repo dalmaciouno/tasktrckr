@@ -13,6 +13,6 @@ function renderTask(task) {
   });
   document.getElementById("title").value = "";
   loadTasks();
-});
+};
 loadTasks();
 
