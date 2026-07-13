@@ -36,18 +36,5 @@ body {
   padding: 10px;
   border-bottom: 1px solid #eee;
 }
-.badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #fff;
-}
-.priority-1 {
-  background: #e74c3c;
-}
-.priority-2 {
-  background: #f39c12;
-}
-.priority-3 {
-  background: #95a5a6;
+
 }
