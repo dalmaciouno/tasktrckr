@@ -1,0 +1,10 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f4f4f4; }
+.container { max-width: 600px; margin: 40px auto; background: #fff;
+padding: 20px; border-radius: 8px; }
+#task-form { display: flex; gap: 8px; margin-bottom: 16px; }
+#task-form input, #task-form select { padding: 8px; }
+#task-form button { padding: 8px 16px; }
+#task-list { list-style: none; }
+.task-item { display: flex; justify-content: space-between; align-items: center;
+padding: 10px; border-bottom: 1px solid #eee; }
