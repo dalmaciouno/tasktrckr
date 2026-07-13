@@ -8,12 +8,7 @@ return json_decode(file_get_contents($dataFile), true);
 function saveTasks($dataFile, $tasks) {
 file_put_contents($dataFile, json_encode($tasks, JSON_PRETTY_PRINT));
 }
-function addTask(&$tasks, $title) {
-$newId = count($tasks) ? max(array_column($tasks, 'id')) + 1 : 1;
-$task = ["id" => $newId, "title" => $title, "status" => "open"];
-$tasks[] = $task;
-return $task;
-}
+main
 $action = $_GET['action'] ?? '';
 $tasks = loadTasks($dataFile);
 switch ($action) {
@@ -21,17 +16,12 @@ case 'list':
 echo json_encode($tasks);
 break;
 case 'add':
-$input = json_decode(file_get_contents('php://input'), true);
-$task = addTask($tasks, $input['title']);
-saveTasks($dataFile, $tasks);
-echo json_encode($task);
 case 'search':
-    $q = strtolower($_GET['q'] ?? '');
-    $results = array_values(array_filter($tasks, function ($t) use ($q) {
-    return strpos(strtolower($t['title']), $q) !== false;
-    }));
-    echo json_encode($results);
-    break;
+$q = strtolower($_GET['q'] ?? '');
+$results = array_values(array_filter($tasks, function ($t) use ($q) {
+return strpos(strtolower($t['title']), $q) !== false;
+}));
+echo json_encode($results);
 case 'done':
 $input = json_decode(file_get_contents('php://input'), true);
 foreach ($tasks as &$t) {
@@ -44,3 +34,32 @@ default:
 http_response_code(400);
 echo json_encode(["error" => "Unknown action"]);
 }
+<?php
+function parseDate($dateStr) {
+return DateTime::createFromFormat('Y-m-d', $dateStr);
+}
+function isPastDue($dateStr) {
+$date = parseDate($dateStr);
+return $date && $date < new DateTime();
+}
+function formatRelativeDate($dateStr) {
+$date = parseDate($dateStr);
+if (!$date) return '';
+$diff = (new DateTime())->diff($date);
+$days = (int)$diff->format('%r%a');
+if ($days < 0) return abs($days) . ' day(s) overdue';
+if ($days === 0) return 'due today';
+return "due in {$days} day(s)";
+}
+<?php
+require __DIR__ . '/../api/tasks.php';
+function assertTrue($cond, $message) {
+echo ($cond ? 'PASS: ' : 'FAIL: ') . $message . PHP_EOL;
+}
+$tasks = [];
+$task = addTask($tasks, 'Write report');
+assertTrue($task['id'] === 1, 'First task gets id 1');
+addTask($tasks, 'Review PR');
+assertTrue(count($tasks) === 2, 'Two tasks added');
+$tasks[0]['status'] = 'done';
+assertTrue($tasks[0]['status'] === 'done', 'Task marked done');
