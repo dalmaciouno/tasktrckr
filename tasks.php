@@ -25,7 +25,13 @@ $input = json_decode(file_get_contents('php://input'), true);
 $task = addTask($tasks, $input['title']);
 saveTasks($dataFile, $tasks);
 echo json_encode($task);
-break;
+case 'search':
+    $q = strtolower($_GET['q'] ?? '');
+    $results = array_values(array_filter($tasks, function ($t) use ($q) {
+    return strpos(strtolower($t['title']), $q) !== false;
+    }));
+    echo json_encode($results);
+    break;
 case 'done':
 $input = json_decode(file_get_contents('php://input'), true);
 foreach ($tasks as &$t) {

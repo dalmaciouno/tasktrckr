@@ -24,4 +24,10 @@ body: JSON.stringify({ title })
 document.getElementById("title").value = "";
 loadTasks();
 });
+document.getElementById("search").addEventListener("input", async (e) => {
+    const q = e.target.value;
+    const res = await fetch(`${API_URL}?action=search&q=${encodeURIComponent(q)}`);
+    const tasks = await res.json();
+    renderTasks(tasks);
+});
 loadTasks();
